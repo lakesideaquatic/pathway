@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAC Athlete Pathway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#13263a; --muted:#56687a; --line:#7d8fa1; --rule:#d8e0e7;
+  --accent:#0b5c8e;
+  --bronze:#f3e1cf; --bronze-ink:#7a4317;
+  --silver:#e6eaef; --silver-ink:#45525f;
+  --gold:#f7e9b5; --gold-ink:#6d5300;
+  --ags:#d6ecf7; --ags-ink:#0b4f78;
+  --prep:#d9e6fb; --prep-ink:#1f4a9a;
+  --top:#183a5a; --top-ink:#ffffff;
+  --les:#eef2f5; --les-ink:#3d4d5c;
+  --red:#f8d9d6; --red-ink:#8a2a22;
+  --black:#dcdfe3; --black-ink:#1c2228;
+  --fit:#dff0e6; --fit-ink:#1f5c3a;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;padding:20px 16px 32px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:24px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--display);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-size:15px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,52px);line-height:1;margin:0;text-wrap:balance}
+.lede{margin:0;color:var(--muted);max-width:62ch}
+
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;font-size:15px;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 0}
+.facts b{color:var(--fg);font-weight:600}
+
+.main{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+
+.chart{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:8px}
+.chart svg{display:block;width:100%;min-width:640px;height:auto}
+.hint{font-size:14px;color:var(--muted);margin:6px 4px 2px}
+
+svg text{font-family:var(--body)}
+.edge{fill:none;stroke:var(--line);stroke-width:2}
+.edge.age{stroke-dasharray:6 5}
+.arrowhead{fill:var(--line)}
+.elabel{font-size:13px;fill:var(--muted);font-style:italic}
+.node{cursor:pointer;outline:none}
+.node rect{stroke:transparent;stroke-width:3;transition:stroke .15s}
+.node:hover rect,.node:focus-visible rect{stroke:var(--accent)}
+.node.on rect{stroke:var(--fg)}
+.nname{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:.02em}
+.nsub{font-size:13px}
+.t-bronze rect{fill:var(--bronze)} .t-bronze text{fill:var(--bronze-ink)}
+.t-silver rect{fill:var(--silver)} .t-silver text{fill:var(--silver-ink)}
+.t-gold rect{fill:var(--gold)} .t-gold text{fill:var(--gold-ink)}
+.t-ags rect{fill:var(--ags)} .t-ags text{fill:var(--ags-ink)}
+.t-prep rect{fill:var(--prep)} .t-prep text{fill:var(--prep-ink)}
+.t-top rect{fill:var(--top)} .t-top text{fill:var(--top-ink)}
+.t-les rect{fill:var(--les);stroke:var(--line);stroke-dasharray:5 4} .t-les text{fill:var(--les-ink)}
+.t-red rect{fill:var(--red)} .t-red text{fill:var(--red-ink)}
+.t-black rect{fill:var(--black)} .t-black text{fill:var(--black-ink)}
+.t-fit rect{fill:var(--fit)} .t-fit text{fill:var(--fit-ink)}
+.jct rect{fill:var(--surface);stroke:var(--line);stroke-width:2;stroke-dasharray:5 4}
+.jct text{fill:var(--fg);font-weight:600;font-size:15px}
+
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;display:grid;gap:14px;position:sticky;top:16px}
+@media (max-width:900px){.panel{position:static}}
+.panel h2{font-family:var(--display);font-weight:700;font-size:34px;line-height:1;margin:0}
+.ages{font-size:15px;color:var(--muted);margin-top:4px}
+.desc{margin:0}
+.practice{font-size:15px;padding:8px 12px;border-radius:6px;background:var(--bg)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{font:600 14px var(--body);border:1px solid var(--rule);background:var(--bg);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dest{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0}
+.when{margin:0;font-size:15px;color:var(--muted)}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:15px}
+dt{font-weight:700;white-space:nowrap}
+dd{margin:0;min-width:0;white-space:pre-line}
+dd span{display:block;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;border-top:1px solid var(--rule);padding-top:12px}
+@media (max-width:480px){dl{grid-template-columns:1fr;gap:2px}dd{margin-bottom:8px}}
+@media (prefers-reduced-motion:reduce){.node rect{transition:none}}
+
+.topbar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:2px solid var(--rule)}
+.views{display:flex;gap:4px}
+.views button{font:700 19px var(--display);letter-spacing:.04em;background:none;border:0;color:var(--muted);padding:8px 14px;margin-bottom:-2px;border-bottom:3px solid transparent;cursor:pointer}
+.views button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.ladder{display:grid;gap:14px}
+.ladder-head h2{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.1;margin:0}
+.ladder-head p{margin:6px 0 0;color:var(--muted);max-width:70ch}
+.ltable-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+.ltable{width:100%;min-width:760px;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+.ltable th{text-align:left;font:600 15px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--rule)}
+.ltable td{padding:12px 16px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ltable tr:last-child td{border-bottom:0}
+.ltable tr.tier-break td{border-top:2px solid var(--rule)}
+.mv{display:flex;flex-direction:column;gap:2px;min-width:180px}
+.mv .to{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.1;display:flex;align-items:center;gap:8px}
+.mv .from{font-size:13px;color:var(--muted)}
+.chip{width:12px;height:12px;border-radius:3px;flex:none}
+.chip.bronze{background:var(--bronze-ink)} .chip.silver{background:var(--silver-ink)} .chip.gold{background:var(--gold-ink)}
+.chip.ags{background:var(--ags-ink)} .chip.prep{background:var(--prep-ink)} .chip.top{background:var(--fg)}
+.chip.red{background:var(--red-ink)} .chip.black{background:var(--black-ink)}
+.coach{margin:0;padding-left:18px;font-size:15px;display:grid;gap:3px}
+.info{margin:0;display:grid;gap:8px;font-size:15px}
+.info div{display:grid;gap:2px}.info b{font-weight:700}
+.set{display:block;white-space:nowrap}
+.bar{height:6px;border-radius:3px;background:var(--rule);margin-top:6px;overflow:hidden;max-width:200px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.none{color:var(--muted)}
+.per{display:block;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Lakeside Aquatic Club · Moving Up</div>
+    <h1>The LAC Athlete Pathway</h1>
+    <p class="lede">How swimmers progress from lessons and the Stroke Team through Bronze, Silver, Gold, and on to Senior or National. Tap any group to see what it takes to move up from it.</p>
+  </header>
+
+  <div class="facts">
+    <span><b>Move-ups:</b> March and end of July</span>
+    <span><b>December:</b> mid-season progress report, not a move-up</span>
+    <span><b>Ready to move:</b> all 5 standards, or 4 of 5 with attendance &amp; meets met</span>
+    <span><b>Age</b> is a guideline, not a standard</span>
+  </div>
+
+  <div class="topbar">
+    <div class="views" role="tablist" aria-label="View">
+      <button type="button" id="v-flow" role="tab" aria-selected="true" data-view="flow">Pathway flowchart</button>
+      <button type="button" id="v-ladder" role="tab" aria-selected="false" data-view="ladder">Test set ladder</button>
+    </div>
+  </div>
+
+  <section id="ladder" class="ladder" hidden>
+    <div class="ladder-head">
+      <h2>Practice test sets, group by group</h2>
+      <p>Each row is one move-up with a test set, from Black up to National. Read down a column to see how the same kind of set gets harder. The bar shows the free interval per 100, so 150s and 200s compare with 100s: shorter bar, faster send-off.</p>
+    </div>
+    <div class="ltable-wrap">
+      <table class="ltable">
+        <thead><tr><th scope="col">Move-up</th><th scope="col">Free</th><th scope="col">IM</th><th scope="col">Kick</th></tr></thead>
+        <tbody id="lbody"></tbody>
+      </table>
+    </div>
+    <p class="hint">Where more than one group lists the same move-up with identical test sets (for example AGS and Senior Prep both moving to National Prep), they share a row.</p>
+  </section>
+
+  <div class="main" id="flowview">
+    <div>
+      <div class="chart">
+        <svg id="flow" viewBox="20 0 890 1460" role="img" aria-label="Flowchart of LAC group progression from Lessons and the Stroke Team through Bronze, Silver, Gold, Senior and National">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="arrowhead" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+          </defs>
+          <g id="edges">
+            <path class="edge" marker-end="url(#arr)" d="M420 44 C300 44 200 50 200 96"/>
+            <path class="edge" marker-end="url(#arr)" d="M580 44 C700 44 740 50 740 96"/>
+            <path class="edge" marker-end="url(#arr)" d="M200 168 L200 221"/>
+            <path class="edge" marker-end="url(#arr)" d="M740 168 L740 221"/>
+            <path class="edge age" marker-end="url(#arr)" d="M305 134 L631 134"/>
+            <path class="edge age" marker-end="url(#arr)" d="M305 259 L631 259"/>
+            <path class="edge" marker-end="url(#arr)" d="M170 293 C170 325 140 320 140 346"/>
+            <path class="edge" marker-end="url(#arr)" d="M250 293 C250 325 330 320 330 346"/>
+            <path class="edge" marker-end="url(#arr)" d="M660 293 C660 330 440 325 440 346"/>
+            <path class="edge age" marker-end="url(#arr)" d="M780 293 L780 346"/>
+            <path class="edge" marker-end="url(#arr)" d="M140 418 C140 468 220 460 220 506"/>
+            <path class="edge" marker-end="url(#arr)" d="M380 418 C380 468 300 460 300 506"/>
+            <path class="edge" marker-end="url(#arr)" d="M740 418 L740 506"/>
+            <path class="edge" marker-end="url(#arr)" d="M260 578 L260 666"/>
+            <path class="edge" marker-end="url(#arr)" d="M740 578 L740 666"/>
+            <path class="edge age" marker-end="url(#arr)" d="M365 704 L631 704"/>
+            <path class="edge age" marker-end="url(#arr)" d="M480 384 L631 384"/>
+            <path class="edge age" marker-end="url(#arr)" d="M240 384 L271 384"/>
+            <path class="edge age" marker-end="url(#arr)" d="M365 562 C480 562 520 686 631 686"/>
+            <path class="edge age" marker-end="url(#arr)" d="M365 544 L631 544"/>
+            <path class="edge" marker-end="url(#arr)" d="M690 738 C690 825 450 864 369 864"/>
+            <path class="edge" marker-end="url(#arr)" d="M260 738 L260 826"/>
+            <path class="edge" marker-end="url(#arr)" d="M260 898 C260 958 320 998 381 998"/>
+            <path class="edge" marker-end="url(#arr)" d="M800 738 L800 940 C800 985 720 998 619 998"/>
+            <path class="edge" marker-end="url(#arr)" d="M440 1026 C440 1068 300 1052 300 1086"/>
+            <path class="edge" marker-end="url(#arr)" d="M560 1026 C560 1068 700 1052 700 1086"/>
+            <path class="edge" marker-end="url(#arr)" d="M365 1130 L631 1130"/>
+            <path class="edge" marker-end="url(#arr)" d="M260 1158 L260 1246"/>
+            <path class="edge" marker-end="url(#arr)" d="M740 1158 L740 1246"/>
+            <path class="edge" marker-end="url(#arr)" d="M365 1284 L631 1284"/>
+          </g>
+          <g id="elabels">
+            <text class="elabel" x="468" y="124" text-anchor="middle">as they age up</text>
+            <text class="elabel" x="468" y="249" text-anchor="middle">as they age up</text>
+            <text class="elabel" x="792" y="324">ages 11–12</text>
+            <text class="elabel" x="557" y="374" text-anchor="middle">as they age up</text>
+            <text class="elabel" x="498" y="534" text-anchor="middle">as they age up</text>
+            <text class="elabel" x="455" y="600" text-anchor="end">as they age up</text>
+            <text class="elabel" x="498" y="694" text-anchor="middle">as they age up</text>
+            <text class="elabel" x="585" y="825" text-anchor="middle">ages 11–12</text>
+            <text class="elabel" x="812" y="855">ages 13–14</text>
+            <text class="elabel" x="248" y="945" text-anchor="end">at age 13</text>
+            <text class="elabel" x="498" y="1120" text-anchor="middle">ready for single-sport focus</text>
+            <text class="elabel" x="272" y="1207">in high school</text>
+            <text class="elabel" x="752" y="1207">ages 15 &amp; over</text>
+            <text class="elabel" x="498" y="1274" text-anchor="middle">swimming-focused</text>
+            <text class="elabel" x="500" y="1360" text-anchor="middle">Alongside the pathway · swimmers can move back into a competitive group</text>
+          </g>
+          <g class="jct" aria-hidden="true">
+            <rect x="385" y="970" width="230" height="56" rx="28"/>
+            <text x="500" y="1003" text-anchor="middle">Turning 13: choose a track</text>
+          </g>
+          <g id="nodes"></g>
+        </svg>
+      </div>
+      <p class="hint">Dashed arrow: moves with age. Solid arrows: move-ups earned by meeting the standards. Red and Black are the LAC Stroke Team, the pre-competitive program.</p>
+    </div>
+
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script type="application/json" id="page-data">{
+ "groups": {
+  "les": {
+   "name": "Lessons",
+   "ages": "Where the pathway starts",
+   "sub": "Entry point",
+   "practice": "See the LAC swim lesson schedule for days and times",
+   "desc": "The LAC pathway begins with swim lessons. Swimmers who are ready for a team setting move into Red, the first level of the LAC Stroke Team.",
+   "coach": [],
+   "note": "Talk with the lessons staff or a Stroke Team coach about when your swimmer is ready for Red."
+  },
+  "r1": {
+   "name": "Red 1",
+   "ages": "Ages 8 & under",
+   "sub": "8 & under · 3 days/wk",
+   "practice": "3 days per week, 45 minutes",
+   "desc": "Red is the first level of the LAC Stroke Team, our pre-competitive program. Swimmers build their freestyle and backstroke, learn the basics of all four strokes, and learn how to practice with a team: reading the pace clock, sharing a lane, and following the coach's directions.",
+   "coach": [
+    "Uses the pace clock, leaving the wall 5 or 10 seconds apart from teammates",
+    "Follows directions from LAC coaching staff",
+    "Looks at the coach while they are giving instructions",
+    "Shows self-control and good etiquette while sharing a lane",
+    "Swims in a circle pattern in the lane"
+   ],
+   "coachLabel": "Practice habits your coach looks for",
+   "to": [
+    {
+     "dest": "Black 1",
+     "att": "50% practice attendance, 2 practices most weeks",
+     "skills": "Swims 150 freestyle with body roll, side breathing, correct head position, and a steady kick; swims 75 backstroke with body roll, correct head position, and a steady kick; knows the order of a 100 IM; knows the pull and kick of 3 of the 4 competitive strokes; completes a set of 50s freestyle on a given interval"
+    }
+   ],
+   "ready": "Ready to move up: all exit skills completed, good practice habits, and the coach's recommendation."
+  },
+  "r2": {
+   "name": "Red 2",
+   "ages": "Ages 9–11",
+   "sub": "9–11 · 3 days/wk",
+   "practice": "3 days per week, 45 minutes",
+   "desc": "Red is the first level of the LAC Stroke Team, our pre-competitive program. Swimmers build their freestyle and backstroke, learn the basics of all four strokes, and learn how to practice with a team: reading the pace clock, sharing a lane, and following the coach's directions.",
+   "coach": [
+    "Uses the pace clock, leaving the wall 5 or 10 seconds apart from teammates",
+    "Follows directions from LAC coaching staff",
+    "Looks at the coach while they are giving instructions",
+    "Shows self-control and good etiquette while sharing a lane",
+    "Swims in a circle pattern in the lane"
+   ],
+   "coachLabel": "Practice habits your coach looks for",
+   "to": [
+    {
+     "dest": "Black 2",
+     "att": "50% practice attendance, 2 practices most weeks",
+     "skills": "Swims 150 freestyle with body roll, side breathing, correct head position, and a steady kick; swims 75 backstroke with body roll, correct head position, and a steady kick; knows the order of a 100 IM; knows the pull and kick of 3 of the 4 competitive strokes; completes a set of 50s freestyle on a given interval"
+    }
+   ],
+   "ready": "Ready to move up: all exit skills completed, good practice habits, and the coach's recommendation."
+  },
+  "k1": {
+   "name": "Black 1",
+   "ages": "Ages 9 & under",
+   "sub": "9 & under · 3 days/wk",
+   "practice": "3 days per week, 45 minutes",
+   "desc": "Black is the top level of the LAC Stroke Team and the bridge to competitive swimming. Swimmers swim legal strokes and turns, train on intervals, and get ready to join a Bronze group.",
+   "coach": [
+    "Uses the pace clock, leaving the wall 5 or 10 seconds apart from teammates",
+    "Follows directions from LAC coaching staff",
+    "Looks at the coach while they are giving instructions",
+    "Shows self-control and good etiquette while sharing a lane",
+    "Swims in a circle pattern in the lane"
+   ],
+   "coachLabel": "Practice habits your coach looks for",
+   "to": [
+    {
+     "dest": "Bronze 1",
+     "att": "50% attendance, 2 practices a week",
+     "skills": "Swims 300 freestyle with body roll, side breathing, correct head position, and a steady kick; swims 100 backstroke with body roll, correct head position, and a steady kick; swims a legal 100 IM; legal freestyle and backstroke turns; legal breaststroke and butterfly turns",
+     "sets": [
+      "6 x 50 free @ 1:20/1:30",
+      "25s kick on a board @ :50"
+     ]
+    },
+    {
+     "dest": "Bronze 2",
+     "att": "50% attendance, 2 practices a week",
+     "skills": "Swims 300 freestyle with body roll, side breathing, correct head position, and a steady kick; swims 100 backstroke with body roll, correct head position, and a steady kick; swims a legal 100 IM; legal freestyle and backstroke turns; legal breaststroke and butterfly turns",
+     "sets": [
+      "6 x 50 free @ 1:10/1:20",
+      "25s kick on a board @ :45"
+     ]
+    }
+   ],
+   "ready": "Ready to move up: all exit skills and test sets completed, good practice habits, and the coach's recommendation."
+  },
+  "k2": {
+   "name": "Black 2",
+   "ages": "Ages 10–12",
+   "sub": "10–12 · 3 days/wk",
+   "practice": "3 days per week, 45 minutes",
+   "desc": "Black is the top level of the LAC Stroke Team and the bridge to competitive swimming. Swimmers swim legal strokes and turns, train on intervals, and get ready to join a Bronze group.",
+   "coach": [
+    "Uses the pace clock, leaving the wall 5 or 10 seconds apart from teammates",
+    "Follows directions from LAC coaching staff",
+    "Looks at the coach while they are giving instructions",
+    "Shows self-control and good etiquette while sharing a lane",
+    "Swims in a circle pattern in the lane"
+   ],
+   "coachLabel": "Practice habits your coach looks for",
+   "to": [
+    {
+     "dest": "Bronze 2",
+     "att": "50% attendance, 2 practices a week",
+     "skills": "Swims 300 freestyle with body roll, side breathing, correct head position, and a steady kick; swims 100 backstroke with body roll, correct head position, and a steady kick; swims a legal 100 IM; legal freestyle and backstroke turns; legal breaststroke and butterfly turns",
+     "sets": [
+      "6 x 50 free @ 1:10/1:20",
+      "25s kick on a board @ :45"
+     ]
+    }
+   ],
+   "ready": "Ready to move up: all exit skills and test sets completed, good practice habits, and the coach's recommendation."
+  },
+  "b1": {
+   "name": "Bronze 1",
+   "ages": "Ages 8 & under",
+   "sub": "8 & under · 4 days/wk",
+   "practice": "4 days per week, 1 hour (including WUTS)",
+   "desc": "The first step into competitive swimming: legal technique in all four strokes, efficient kicking, reading the pace clock, and learning to race at JSL and local USA Swimming meets.",
+   "coach": [
+    "Willing to try new things with coach support",
+    "Bounces back after a tough race or set and keeps trying",
+    "Follows directions and listens to corrections",
+    "Treats teammates with respect and shares the lane well"
+   ],
+   "to": [
+    {
+     "dest": "Silver 1",
+     "att": "75% of practices; 3+ practices per week\nAttend 75% of meets scheduled per season",
+     "skills": "Legal 50s of all four strokes, 100 free, and 100 IM (short course); legal flip and open turns; legal breaststroke pullout and IM turns",
+     "sets": [
+      "6 x 100 free @ 2:10",
+      "6 x 50 free kick @ 1:15",
+      "3 x 50 IM transition @ 1:15"
+     ],
+     "times": "2 USA Swimming 10 & Under B times"
+    }
+   ]
+  },
+  "b2": {
+   "name": "Bronze 2",
+   "ages": "Ages 9–10",
+   "sub": "9–10 · 4 days/wk",
+   "practice": "4 days per week, 1 hour (including WUTS)",
+   "desc": "The foundation for swimmers who start the sport a little older: legal 100s of each stroke, legal IM turns, steady kicking, and confidence at USA Swimming meets.",
+   "coach": [
+    "Willing to try new things and recovers from disappointment",
+    "Reads the clock and follows intervals",
+    "Pays attention and applies corrections",
+    "Good teammate in the lane and at meets"
+   ],
+   "to": [
+    {
+     "dest": "Silver 1",
+     "att": "75% of practices; 3+ practices per week\nAttend 75% of meets scheduled per season",
+     "skills": "Legal 50s of all four strokes; legal 100 free, 100 back, 100 breast; 100 IM (short course); 200 IM (long course); legal IM turns",
+     "sets": [
+      "6 x 100 free @ 2:00",
+      "10 x 50 free kick @ 1:10",
+      "3 x 100 IM @ 2:05"
+     ],
+     "times": "At least 4 USA Swimming 10 & Under B times"
+    }
+   ]
+  },
+  "b3": {
+   "name": "Bronze 3",
+   "ages": "Ages 11–12",
+   "sub": "11–12 · 4 days/wk",
+   "practice": "4 days per week, 1 hour (including WUTS)",
+   "desc": "The foundation for swimmers who start the sport a little older: legal 100s of each stroke, legal IM turns, steady kicking, and confidence at USA Swimming meets.",
+   "coach": [
+    "Willing to try new things and recovers from disappointment",
+    "Reads the clock and follows intervals",
+    "Pays attention and applies corrections",
+    "Good teammate in the lane and at meets"
+   ],
+   "to": [
+    {
+     "dest": "Silver 2",
+     "att": "75% of practices; 3+ practices per week\nAttend 75% of meets scheduled per season",
+     "skills": "Legal 50s of all four strokes; legal 100 free, 100 back, 100 breast; 100 IM (short course); 200 IM (long course); legal IM turns",
+     "sets": [
+      "6 x 100 free @ 1:50",
+      "10 x 50 free kick @ 1:10",
+      "3 x 100 IM @ 2:05"
+     ],
+     "times": "At least 1 USA Swimming 11–12 B time"
+    }
+   ]
+  },
+  "s1": {
+   "name": "Silver 1",
+   "ages": "Ages 10 & under",
+   "sub": "10 & under · 4 days/wk",
+   "practice": "4 days per week, 1 hour 15 minutes (including WUTS)",
+   "desc": "The first true training group. Swimmers hold good technique through longer aerobic sets, build their kick, and race regularly while working toward first BB and A times.",
+   "coach": [
+    "Keeps effort and composure when sets get harder",
+    "Handles mistakes without shutting down",
+    "Applies feedback right away and stays focused through a full practice",
+    "Compares to their own past swims, not to teammates"
+   ],
+   "to": [
+    {
+     "dest": "Gold 1",
+     "att": "80% of practices; 3+ practices per week\n75% of offered meets, full sessions (example: 4 of 6)",
+     "skills": "Legal 50s and 100s of all four strokes; 100 IM (short course); 200 free; 200 IM (long course); 3 underwater kicks off every wall",
+     "sets": [
+      "6 x 100 free @ 1:45",
+      "4 x 100 IM @ 1:55",
+      "5 x 100 free kick @ 2:05"
+     ],
+     "times": "5 USA Swimming 10 & Under BB times"
+    }
+   ]
+  },
+  "s2": {
+   "name": "Silver 2",
+   "ages": "Ages 11–13",
+   "sub": "11–13 · 4 days/wk",
+   "practice": "4 days per week, 1 hour 15 minutes (including WUTS)",
+   "desc": "Builds training skills for swimmers 11 and older: good technique over 100s and 200s, consistent interval training, and moving from B/C meets toward BB meets.",
+   "coach": [
+    "Steady effort through the whole practice",
+    "Handles mistakes with support and keeps going",
+    "Responds well to instruction and applies corrections with reminders",
+    "Motivated by team, routine, and personal progress"
+   ],
+   "to": [
+    {
+     "dest": "Gold 2",
+     "att": "80% of practices; 3+ practices per week\n75% of offered meets, full sessions (example: 4 of 6)",
+     "skills": "Legal 50s and 100s of all four strokes; 200 free; 200 IM",
+     "sets": [
+      "6 x 100 free @ 1:40",
+      "5 x 100 IM @ 1:55",
+      "6 x 100 free kick @ 2:00"
+     ],
+     "times": "3 USA Swimming 11–12 B times"
+    }
+   ]
+  },
+  "g1": {
+   "name": "Gold 1",
+   "ages": "Ages 10 & under",
+   "sub": "10 & under · 5 days/wk",
+   "practice": "5 days per week, 1 hour 30 minutes, plus 2–3 short dryland sessions",
+   "desc": "LAC's top 10 & under group. Swimmers build aerobic capacity, race 200s and distance events, earn IMR and IMX scores, and work toward A-level meets and TAGS.",
+   "coach": [
+    "Finishes full practices without constant motivation",
+    "Accepts feedback without getting defensive",
+    "Takes ownership of warm-up (WUTS), effort, and preparation",
+    "Checks in with their coach before and after races"
+   ],
+   "to": [
+    {
+     "dest": "AGS",
+     "when": "When ready for the top 11–12 group",
+     "att": "85% of practices; 4+ practices per week\n1 meet per month, swimming IMR/IMX events; attends highest qualified championship meet",
+     "skills": "Legal 100s of all four strokes; 200 free, 200 back, 200 breast; 200 IM; 500 free",
+     "sets": [
+      "8 x 100 free @ 1:30",
+      "6 x 100 IM @ 1:40",
+      "8 x 100 free kick @ 2:00"
+     ],
+     "times": "4 USA Swimming 11–12 BB times (in 2+ strokes, including a 200) OR 1 A time + 2 BB times"
+    },
+    {
+     "dest": "Gold 2",
+     "when": "As they age up",
+     "att": "80% of practices; 4+ practices per week\n75% of offered meets",
+     "skills": "Legal 50s and 100s of all four strokes; 200 free; 200 IM",
+     "sets": [
+      "6 x 100 free @ 1:40",
+      "5 x 100 IM @ 1:55",
+      "6 x 100 free kick @ 2:05"
+     ],
+     "times": "3 USA Swimming 11–12 B times"
+    }
+   ]
+  },
+  "g2": {
+   "name": "Gold 2",
+   "ages": "Ages 11–13",
+   "sub": "11–13 · 5 days/wk",
+   "practice": "5 days per week, 1 hour 30 minutes, plus 2–3 short dryland sessions",
+   "desc": "Builds the aerobic base swimmers need for the 13 & over program: moving from BB to A times, earning an IMR score, and racing a full range of events.",
+   "coach": [
+    "Finishes full practices without constant motivation",
+    "Accepts feedback without getting defensive",
+    "Stays engaged when times plateau or others move faster",
+    "Uses simple reset strategies after a disappointing swim"
+   ],
+   "to": [
+    {
+     "dest": "AGS",
+     "when": "Ages 11–12",
+     "att": "90% of practices; 4+ practices per week\n1 meet per month, swimming IMR/IMX events; attends highest qualified championship meet",
+     "skills": "Legal 100s of all four strokes; 200 free, 200 back, 200 breast; 200 IM; 500 free",
+     "sets": [
+      "8 x 150 free @ 2:10",
+      "4 x 200 IM @ 3:15",
+      "8 x 100 free kick @ 2:00"
+     ],
+     "times": "4 USA Swimming 11–12 BB times (in 2+ strokes, including a 200) OR 1 A time + 2 BB times"
+    },
+    {
+     "dest": "Senior Prep",
+     "when": "Ages 13–14",
+     "att": "75% of practices\n1 meet per month in season; attends highest qualified championship meet",
+     "skills": "Legal 100s of all four strokes; 200 free, 200 back, 200 breast; 200 IM; 500 free",
+     "sets": [
+      "8 x 150 free @ 2:15",
+      "4 x 200 IM @ 3:20",
+      "8 x 100 free kick @ 1:55"
+     ],
+     "times": "4 USA Swimming 13–14 B times OR 2 13–14 BB times"
+    },
+    {
+     "dest": "National Prep",
+     "when": "Ages 13–14",
+     "att": "90% of practices; 5+ practices per week\n1 meet per month; attends highest qualified championship meet",
+     "skills": "Legal 100s and 200s of all four strokes; 400 IM; 500 free",
+     "sets": [
+      "8 x 150 free @ 2:05",
+      "4 x 200 IM @ 3:10",
+      "8 x 100 free kick @ 1:50"
+     ],
+     "times": "2 USA Swimming 13–14 A times OR 5 13–14 BB times"
+    }
+   ]
+  },
+  "ags": {
+   "name": "AGS",
+   "ages": "Age Group Select · Ages 11–12",
+   "sub": "11–12 · 6 days/wk",
+   "practice": "6 days per week, 2 hours, plus dryland",
+   "desc": "The top 11–12 group at each site. Swimmers train with purpose, race prelim-final meets, target TAGS, and take their first team travel trips outside Texas.",
+   "coach": [
+    "Runs their own warm-up, race routine, and cool-down at meets",
+    "Sets goals and talks with their coach about them",
+    "Learns from mistakes and sees faster swimmers as inspiration, not a threat",
+    "Holds intensity in sets without needing outside motivation"
+   ],
+   "to": [
+    {
+     "dest": "National Prep",
+     "when": "At age 13",
+     "att": "90% of practices; 5+ practices per week\n1 meet per month; attends highest qualified championship meet",
+     "skills": "Legal 100s and 200s of all four strokes; 400 IM; 500 free",
+     "sets": [
+      "6 x 200 free @ 2:40",
+      "4 x 200 IM @ 3:00",
+      "8 x 100 free kick @ 1:45"
+     ],
+     "times": "2 USA Swimming 13–14 A times OR 5 13–14 BB times"
+    },
+    {
+     "dest": "Senior Prep",
+     "when": "At age 13",
+     "att": "75% of practices\n1 meet per month in season; attends highest qualified championship meet",
+     "skills": "Legal 100s of all four strokes; 200 free, 200 back, 200 breast; 200 IM; 500 free",
+     "sets": [
+      "6 x 200 free @ 2:50",
+      "4 x 200 IM @ 3:15",
+      "8 x 100 free kick @ 1:55"
+     ],
+     "times": "4 USA Swimming 13–14 B times OR 2 13–14 BB times"
+    }
+   ]
+  },
+  "sp": {
+   "name": "Senior Prep",
+   "ages": "Ages 13–14",
+   "sub": "13–14 · 6 days/wk",
+   "practice": "6 days per week, 2–2.5 hours, plus 3 dryland sessions",
+   "desc": "For 13–14 year olds building toward high school and senior swimming, often while balancing other activities. Introduces body-weight strength training and a broad set of events.",
+   "coach": [
+    "Consistent effort and re-engages when motivation dips",
+    "Uses taught reset and focus tools when prompted",
+    "Speaks up when stress is affecting performance",
+    "Applies feedback within the same practice"
+   ],
+   "to": [
+    {
+     "dest": "Senior",
+     "when": "In high school",
+     "att": "75% of practices (high school team practices count during the high school season)\n1 meet per month outside the high school season",
+     "skills": "Legal 100s of all four strokes; 200 free, 200 back, 200 breast; 200 IM; 500 free",
+     "sets": [
+      "6 x 150 free @ 2:10",
+      "4 x 200 IM @ 3:15",
+      "8 x 100 free kick @ 1:55"
+     ],
+     "times": "5 USA Swimming 15–16 BB times OR 2 15–16 A times"
+    },
+    {
+     "dest": "National Prep",
+     "when": "When ready for a single-sport commitment",
+     "att": "90% of practices; 5+ practices per week\n1 meet per month; attends highest qualified championship meet",
+     "skills": "Legal 100s and 200s of all four strokes; 400 IM; 500 free",
+     "sets": [
+      "6 x 200 free @ 2:40",
+      "4 x 200 IM @ 3:00",
+      "8 x 100 free kick @ 1:45"
+     ],
+     "times": "2 USA Swimming 13–14 A times OR 5 13–14 BB times"
+    }
+   ]
+  },
+  "np": {
+   "name": "National Prep",
+   "ages": "Ages 13–14",
+   "sub": "13–14 · 6 days/wk",
+   "practice": "6 days per week, 2–2.25 hours, plus 3 dryland sessions",
+   "desc": "For 13–14 year olds who have made swimming their primary sport. Swimmers learn to manage multi-day prelim-final meets, swim fast in the morning, and own their training.",
+   "coach": [
+    "Self-motivated and seeks out feedback on their own",
+    "Resets between races and manages nerves",
+    "Balances school and training with maturity",
+    "Leads by example and supports teammates"
+   ],
+   "to": [
+    {
+     "dest": "National",
+     "att": "85% of practices (high school team practices count during the high school season)\nFull club championship meet schedule",
+     "skills": "Legal 200s of all four strokes; 400 IM; 500 free",
+     "sets": [
+      "7 x 200 free @ 2:20",
+      "8 x 200 IM @ 2:50",
+      "10 x 100 free kick @ 1:45"
+     ],
+     "times": "2 Sectional times"
+    }
+   ]
+  },
+  "sen": {
+   "name": "Senior",
+   "ages": "High school",
+   "sub": "High school · 6 days/wk",
+   "practice": "6 days per week, 2–2.5 hours, plus 3 dryland sessions",
+   "desc": "For high school swimmers focused on high school, North Texas, and Sectional-level racing, including athletes in other sports. Training emphasizes race pace, speed, and strength.",
+   "coach": [
+    "Self-motivates in training, even when it's hard",
+    "Owns meet preparation: warm-up, race plan, cool-down",
+    "Communicates with coaches about schedule, goals, and setbacks",
+    "Balances school, activities, and swimming"
+   ],
+   "to": [
+    {
+     "dest": "National",
+     "when": "For swimmers focused solely on swimming",
+     "att": "85% of practices (high school team practices count during the high school season)\nFull club championship meet schedule",
+     "skills": "Legal 200s of all four strokes; 400 IM; 500 free",
+     "sets": [
+      "7 x 200 free @ 2:20",
+      "8 x 200 IM @ 2:50",
+      "10 x 100 free kick @ 1:45"
+     ],
+     "times": "2 Sectional times"
+    }
+   ]
+  },
+  "nat": {
+   "name": "National",
+   "ages": "Ages 15 & over (14 by exception)",
+   "sub": "15 & over · 6 days/wk",
+   "practice": "6 days per week, 2–2.5 hours, plus 3 dryland sessions",
+   "desc": "The highest level of the LAC pathway, for swimmers competing at Sectionals, Futures, Junior Nationals, and beyond. Athletes lead the program and manage training, recovery, school, and sleep at a high level. A 14 year old is placed in National only with nationally ranked swims or a Junior National time.",
+   "coach": [
+    "Leads the team and mentors younger swimmers",
+    "Prepares and recovers independently at multi-day meets",
+    "Partners with coaches to solve performance problems",
+    "Models professionalism in and out of the water"
+   ],
+   "note": "National is the final group in the LAC pathway, so there is no next move-up. Swimmers reach National by meeting the move-up standards on the National Prep or Senior page."
+  },
+  "fit": {
+   "name": "Lakeside Fit",
+   "ages": "A flexible option alongside the pathway",
+   "sub": "Flexible · no meet requirement",
+   "practice": "Days per week and practice length to be announced",
+   "desc": "Lakeside Fit is for swimmers who love the sport but want a flexible pathway. It fits athletes who don't want to commit to the full demands of the other senior-level groups, or who can't meet their training requirements. The focus is fitness, technique, and enjoying the sport, with room for school and other activities.",
+   "coach": [
+    "Fitness and staying active",
+    "Technique development",
+    "Skill and confidence in the water",
+    "Enjoying the sport with the Lakeside community"
+   ],
+   "coachLabel": "What Lakeside Fit focuses on",
+   "info": [
+    [
+     "Joining",
+     "All swimmers complete a tryout or placement evaluation so they are placed in the right group"
+    ],
+    [
+     "Meets",
+     "No meet requirement. Families choose how involved they want to be."
+    ],
+    [
+     "USA Swimming",
+     "Every Lakeside Fit swimmer is registered as a USA Swimming member"
+    ],
+    [
+     "Coaching",
+     "Led by a USA Swimming-certified coach in a fun, positive, supportive environment"
+    ],
+    [
+     "Moving back to a competitive group",
+     "A swimmer can move back into a competitive group when their skills meet that group's level. Talk with your coach about your swimmer's skills compared to the group they want to join."
+    ]
+   ]
+  }
+ }
+}</script>
+<script>
+/* Read-only build for the LAC website. To change the standards, edit the JSON block above. */
+const LAYOUT={
+  les:{tier:"les",x:500,y:10,w:160},
+  r1:{tier:"red",x:200,y:100,w:210}, r2:{tier:"red",x:740,y:100,w:210},
+  k1:{tier:"black",x:200,y:225,w:210}, k2:{tier:"black",x:740,y:225,w:210},
+  b1:{tier:"bronze",x:140,y:350,w:200}, b2:{tier:"bronze",x:380,y:350,w:200}, b3:{tier:"bronze",x:740,y:350,w:210},
+  s1:{tier:"silver",x:260,y:510,w:210}, s2:{tier:"silver",x:740,y:510,w:210},
+  g1:{tier:"gold",x:260,y:670,w:210}, g2:{tier:"gold",x:740,y:670,w:210},
+  ags:{tier:"ags",x:260,y:830,w:210},
+  sp:{tier:"prep",x:260,y:1090,w:210}, np:{tier:"prep",x:740,y:1090,w:210},
+  sen:{tier:"top",x:260,y:1250,w:210}, nat:{tier:"top",x:740,y:1250,w:210},
+  fit:{tier:"fit",x:500,y:1370,w:320}
+};
+const ORDER=Object.keys(LAYOUT);
+const NS="http://www.w3.org/2000/svg", H=68;
+const nodesG=document.getElementById("nodes"), panel=document.getElementById("panel");
+const DATA=JSON.parse(document.getElementById("page-data").textContent);
+let cur="b1", tab=0;
+
+function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
+function el(tag,attrs,txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e;}
+
+/* ---------- Flowchart nodes ---------- */
+function renderNodes(){
+  nodesG.textContent="";
+  for(const id of ORDER){
+    const L=LAYOUT[id], n=DATA.groups[id]; if(!n)continue;
+    const g=el("g",{class:"node t-"+L.tier+(id===cur?" on":""),tabindex:"0",role:"button","data-id":id,"aria-label":n.name+", "+n.ages});
+    g.appendChild(el("rect",{x:L.x-L.w/2,y:L.y,width:L.w,height:H,rx:10}));
+    g.appendChild(el("text",{class:"nname",x:L.x,y:L.y+31,"text-anchor":"middle"},n.name));
+    g.appendChild(el("text",{class:"nsub",x:L.x,y:L.y+52,"text-anchor":"middle"},n.sub));
+    g.addEventListener("click",()=>select(id));
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(id);}});
+    nodesG.appendChild(g);
+  }
+}
+
+/* ---------- Side panel ---------- */
+function destTabs(n){
+  if(n.to.length<2)return "";
+  return `<div class="tabs" role="group" aria-label="Next group">`+n.to.map((d,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===tab}">${esc(d.dest)}</button>`).join("")+`</div>`;
+}
+function renderPanel(){
+  const n=DATA.groups[cur]; const has=n.to&&n.to.length; if(has&&tab>=n.to.length)tab=0; const t=has?n.to[tab]:null;
+  const head=has?(n.to.length>1?"Move up to":"Move up to "+t.dest):"";
+  const coachLabel=n.coachLabel||"Coachability: what your coach looks for";
+  const ready=n.ready||"Ready to move up: all 5 standards met, or 4 of 5 with attendance & meets met, the last standard within reach, and the coach's recommendation. Coaches make the final call. Your site may use a slightly adjusted version of these standards.";
+  let h=`<div><h2>${esc(n.name)}</h2><div class="ages">${esc(n.ages)}</div></div>
+    <p class="desc">${esc(n.desc)}</p>
+    <div class="practice"><b>Practice:</b> ${esc(n.practice)}</div>`;
+  if(n.info){
+    h+=`<p class="dest">How it works</p><div class="info">`+n.info.map(([k,v])=>`<div><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join("")+`</div>`;
+  }
+  if(has){
+    h+=`<p class="dest">${head}</p>${destTabs(n)}
+    ${t.when?`<p class="when">${esc(t.when)}</p>`:""}
+    <dl>
+      ${t.att?`<dt>Attendance &amp; meets</dt><dd>${esc(t.att)}</dd>`:""}
+      ${t.skills?`<dt>Legal events &amp; skills</dt><dd>${esc(t.skills)}</dd>`:""}
+      ${t.sets&&t.sets.length?`<dt>Practice test sets</dt><dd>${t.sets.map(s=>`<span>${esc(s)}</span>`).join("")}</dd>`:""}
+      ${t.times?`<dt>Time standards</dt><dd>${esc(t.times)}</dd>`:""}
+    </dl>`;
+  }
+  if(n.coach&&n.coach.length){
+    h+=`<p class="dest">${esc(coachLabel)}</p><ul class="coach">`+n.coach.map(c=>`<li>${esc(c)}</li>`).join("")+`</ul>`;
+  }
+  if(n.note)h+=`<p class="note">${esc(n.note)}</p>`;
+  else if(has)h+=`<p class="note">${esc(ready)}</p>`;
+  panel.innerHTML=h;
+  panel.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{tab=+b.dataset.i;renderPanel();}));
+  reportHeight();
+}
+function select(id){cur=id;tab=0;renderNodes();renderPanel();}
+
+/* ---------- Test set ladder (built from the standards) ---------- */
+function kind(s){return /kick/i.test(s)?"kick":/\bIM\b/.test(s)?"im":"free";}
+function secs(s){const m=s.match(/@\s*(\d+):(\d+)/);return m?(+m[1])*60+(+m[2]):0;}
+function dist(s){const m=s.match(/x\s*(\d+)/i);return m?+m[1]:100;}
+function per100(s){const t=secs(s);return t?t/(dist(s)/100):0;}
+function fmt(t){const m=Math.floor(t/60),x=Math.round(t-m*60);return m+":"+String(x).padStart(2,"0");}
+function renderLadder(){
+  const G=DATA.groups, nameToId={};
+  ORDER.forEach(id=>{if(G[id])nameToId[G[id].name.toLowerCase()]=id;});
+  const rank=name=>{const id=nameToId[name.toLowerCase()];return id?ORDER.indexOf(id):99;};
+  const rows=[], byKey={};
+  ORDER.forEach(fid=>{const g=G[fid]; if(!g||!g.to)return;
+    g.to.forEach(t=>{
+      if(!t.sets||!t.sets.length)return;
+      const cols={free:[],im:[],kick:[]}; t.sets.forEach(s=>cols[kind(s)].push(s));
+      const key=t.dest+"|"+t.sets.join("|");
+      if(byKey[key]){byKey[key].from.push(g.name);return;}
+      const r={dest:t.dest,from:[g.name],cols,tier:(LAYOUT[nameToId[t.dest.toLowerCase()]]||{}).tier||"top",rank:rank(t.dest)*10+ORDER.indexOf(fid)/100};
+      byKey[key]=r; rows.push(r);
+    });
+  });
+  rows.sort((a,b)=>a.rank-b.rank);
+  const joinList=a=>a.length<3?a.join(" or "):a.slice(0,-1).join(", ")+", or "+a[a.length-1];
+  let prevTier=null;
+  document.getElementById("lbody").innerHTML=rows.map(r=>{
+    const brk=prevTier&&r.tier!==prevTier; prevTier=r.tier;
+    const free=r.cols.free.length?r.cols.free.map(s=>`<span class="set">${esc(s)}</span>`).join("")+
+      (per100(r.cols.free[0])?`${dist(r.cols.free[0])!==100?`<span class="per">${fmt(per100(r.cols.free[0]))} per 100</span>`:""}<div class="bar" aria-hidden="true"><i style="width:${Math.min(100,Math.round(per100(r.cols.free[0])/165*100))}%"></i></div>`:""):'<span class="none">No free test set</span>';
+    const cell=(a,none)=>a.length?a.map(s=>`<span class="set">${esc(s)}</span>`).join(""):`<span class="none">${none}</span>`;
+    return `<tr${brk?' class="tier-break"':''}>
+      <td><div class="mv"><span class="to"><span class="chip ${r.tier}"></span>${esc(r.dest)}</span><span class="from">from ${esc(joinList(r.from))}</span></div></td>
+      <td>${free}</td><td>${cell(r.cols.im,"No IM test set")}</td><td>${cell(r.cols.kick,"No kick test set")}</td></tr>`;
+  }).join("");
+}
+
+/* ---------- View switching ---------- */
+const views={flow:document.getElementById("flowview"),ladder:document.getElementById("ladder")};
+const vbtns=document.querySelectorAll(".views button");
+function show(v){
+  if(!views[v])v="flow";
+  for(const k in views)views[k].hidden=(k!==v);
+  vbtns.forEach(b=>b.setAttribute("aria-selected",String(b.dataset.view===v)));
+  reportHeight();
+}
+vbtns.forEach(b=>b.addEventListener("click",()=>show(b.dataset.view)));
+
+/* ---------- Tell a parent page (iframe) how tall we are ---------- */
+function reportHeight(){
+  if(window.parent===window)return;
+  requestAnimationFrame(()=>{
+    const h=document.documentElement.scrollHeight;
+    try{window.parent.postMessage({type:"lac-pathway-height",height:h},"*");}catch(e){}
+  });
+}
+window.addEventListener("load",reportHeight);
+window.addEventListener("resize",reportHeight);
+if(window.ResizeObserver){new ResizeObserver(reportHeight).observe(document.body);}
+
+renderNodes();renderPanel();renderLadder();show("flow");
+</script>
+</body>
+</html>
