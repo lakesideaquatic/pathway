@@ -49,6 +49,12 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,52px);lin
 .chart{overflow-x:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:8px}
 .chart svg{display:block;width:100%;min-width:640px;height:auto}
 .hint{font-size:14px;color:var(--muted);margin:6px 4px 2px}
+.tap-hint{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 14px;border-radius:8px;background:var(--ags);color:var(--ags-ink);font-size:15px;font-weight:600}
+.tap-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(11,92,142,.5);animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(11,92,142,.5)}70%{box-shadow:0 0 0 8px rgba(11,92,142,0)}100%{box-shadow:0 0 0 0 rgba(11,92,142,0)}}
+@media (prefers-reduced-motion:reduce){.tap-dot{animation:none}}
+.tap-hint .below{display:none}
+@media (max-width:900px){.tap-hint .beside{display:none}.tap-hint .below{display:inline}}
 
 svg text{font-family:var(--body)}
 .edge{fill:none;stroke:var(--line);stroke-width:2}
@@ -132,7 +138,7 @@ dd span{display:block;font-variant-numeric:tabular-nums}
   <header>
     <div class="eyebrow">Lakeside Aquatic Club · Moving Up</div>
     <h1>The LAC Athlete Pathway</h1>
-    <p class="lede">How swimmers progress from lessons and the Stroke Team through Bronze, Silver, Gold, and on to Senior or National. Tap any group to see what it takes to move up from it.</p>
+    <p class="lede">How swimmers progress from lessons and the Stroke Team through Bronze, Silver, Gold, and on to Senior or National.</p>
     <a class="guide-link" href="https://www.swimlac.org/ntlac/UserFiles/Image/QuickUpload/lac-moving-up-family-guide-3-_077731.pdf" target="_blank" rel="noopener">
       <span class="guide-icon" aria-hidden="true">PDF</span>
       <span><b>Want the full details?</b> Click here to read the complete Moving Up Family Guide</span>
@@ -169,6 +175,7 @@ dd span{display:block;font-variant-numeric:tabular-nums}
 
   <div class="main" id="flowview">
     <div>
+      <p class="tap-hint"><span class="tap-dot" aria-hidden="true"></span><span>Click any group in the flowchart to see what it takes to move up. Details appear <span class="beside">to the right</span><span class="below">below the chart</span>.</span></p>
       <div class="chart">
         <svg id="flow" viewBox="20 0 890 1460" role="img" aria-label="Flowchart of LAC group progression from Lessons and the Stroke Team through Bronze, Silver, Gold, Senior and National">
           <defs>
