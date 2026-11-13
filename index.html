@@ -52,6 +52,8 @@ h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,52px);lin
 .legend{display:flex;flex-wrap:wrap;gap:6px 22px;margin:0 4px 10px;font-size:14px;color:var(--muted)}
 .legend .key{display:inline-flex;align-items:center;gap:8px}
 .legend svg{flex:none;overflow:visible}
+.legend .living{flex-basis:100%;font-style:italic}
+.legend .living b{font-style:normal;font-weight:600;color:var(--fg);white-space:nowrap}
 .tap-hint{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 14px;border-radius:8px;background:var(--ags);color:var(--ags-ink);font-size:15px;font-weight:600}
 .tap-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(11,92,142,.5);animation:pulse 1.8s ease-out infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(11,92,142,.5)}70%{box-shadow:0 0 0 8px rgba(11,92,142,0)}100%{box-shadow:0 0 0 0 rgba(11,92,142,0)}}
@@ -183,6 +185,7 @@ dd span{display:block;font-variant-numeric:tabular-nums}
         <span class="key"><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="26" y2="5" class="edge"/><path class="arrowhead" d="M25 1 L33 5 L25 9 z"/></svg>Solid arrow: move-up earned by meeting the standards</span>
         <span class="key"><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="26" y2="5" class="edge age"/><path class="arrowhead" d="M25 1 L33 5 L25 9 z"/></svg>Dashed arrow: moves with age</span>
         <span class="key">Red and Black are the LAC Stroke Team, the pre-competitive program</span>
+        <span class="living">This is a living document and will be updated as the program grows. <b>Last updated: November 13, 2026</b></span>
       </div>
       <div class="chart">
         <svg id="flow" viewBox="20 0 890 1460" role="img" aria-label="Flowchart of LAC group progression from Lessons and the Stroke Team through Bronze, Silver, Gold, Senior and National">
